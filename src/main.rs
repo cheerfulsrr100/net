@@ -1,4 +1,4 @@
-use crate::unix_rs::{socket, AddressFamily, SockProtocol, SockType};
+use crate::unix_rs::{AddressFamily, Protocol, SocketType};
 
 pub mod unix_rs {
     use libc;
@@ -43,6 +43,13 @@ pub mod unix_rs {
                 Ok(v)
             }
         }
+
+        pub fn desc(&self) -> &str {
+            match *self {
+                Errno::EUNKNOWN => "Unkonw error",
+                Errno::EPROTONOSUPPORT => "Protocol not supported.",
+            }
+        }
     }
 
     impl From<i32> for Errno {
@@ -59,14 +66,8 @@ pub mod unix_rs {
     impl Display for Errno {
         fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
             match *self {
-                Errno::EPROTONOSUPPORT => {
-                    write!(
-                        f,
-                        "{} {:?} {}",
-                        *self as i32, self, "Protocol not supported."
-                    )
-                }
-                Errno::EUNKNOWN => write!(f, "{} {:?} {}", *self as i32, self, "Unkonw error"),
+                Errno::EPROTONOSUPPORT => write!(f, "{} {:?} {}", *self as i32, self, self.desc()),
+                Errno::EUNKNOWN => write!(f, "{} {:?} {}", *self as i32, self, self.desc()),
             }
         }
     }
@@ -81,27 +82,44 @@ pub mod unix_rs {
 
     #[repr(i32)]
     #[non_exhaustive]
-    pub enum SockType {
+    pub enum SocketType {
         Stream = libc::SOCK_STREAM,
         Datagram = libc::SOCK_DGRAM,
     }
 
     #[repr(i32)]
-    pub enum SockProtocol {
+    pub enum Protocol {
         TCP,
         UDP,
+        #[cfg(debug_assertions)]
+        Error = 30,
     }
 
-    pub fn socket(family: AddressFamily, ty: SockType, protocol: SockProtocol) -> Result<RawFd> {
+    pub fn socket(family: AddressFamily, ty: SocketType, protocol: Protocol) -> Result<RawFd> {
         Errno::result(unsafe { libc::socket(family as i32, ty as i32, protocol as i32) })
     }
 
-    pub fn connect(fd: RawFd) {
-        
+    pub fn connect(fd: RawFd) {}
+}
+
+mod green {
+
+    use std::os::unix::prelude::RawFd;
+
+    use crate::unix_rs::{socket, AddressFamily, Protocol, SocketType};
+
+    #[allow(non_snake_case)]
+    pub fn Socket(family: AddressFamily, ty: SocketType, protocol: Protocol) -> RawFd {
+        match socket(family, ty, protocol) {
+            Ok(fd) => fd,
+            Err(errno) => panic!("{}", errno),
+        }
     }
 }
 
 fn main() {
-    let fd = socket(AddressFamily::Inet, SockType::Stream, SockProtocol::TCP);
-    println!("{}", fd.unwrap());
+    use crate::green::Socket;
+
+    let fd = Socket(AddressFamily::Inet, SocketType::Stream, Protocol::TCP);
+    println!("{}", fd)
 }
