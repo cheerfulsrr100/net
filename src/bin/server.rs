@@ -1,6 +1,9 @@
+mod util;
+
 use std::{net::TcpListener, process};
 
-use lib::{unistd::fork, util::str_echo};
+use lib::unistd::fork;
+use util::str_echo;
 
 fn main() -> std::io::Result<()> {
     let listener = TcpListener::bind("127.0.0.1:8080")?;
