@@ -1,23 +1,17 @@
-use std::net::TcpListener;
+use std::{net::TcpListener, process};
 
 use lib::{unistd::fork, util::str_echo};
 
 fn main() -> std::io::Result<()> {
-    let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
+    let listener = TcpListener::bind("127.0.0.1:8080")?;
     println!("listen..");
+
     loop {
-        match listener.accept() {
-            Ok((mut stream, _)) => match fork() {
-                Ok(pid) => {
-                    if pid == 0 {
-                        println!("ppid {}, pid {}", unsafe { libc::getppid() }, pid);
-                        str_echo(&mut stream)?
-                    }
-                }
-                Err(e) => panic!("{}", e),
-            },
-            Err(_) => panic!("accept error"),
+        let (mut s, _) = listener.accept()?;
+        let pid = fork().expect("fork error");
+        if pid == 0 {
+            str_echo(&mut s)?;
+            process::exit(0);
         }
-        println!("end")
     }
 }

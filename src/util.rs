@@ -1,32 +1,33 @@
 use std::{
     io::{stdin, Read, Result, Write},
+    mem::size_of,
     net::TcpStream,
 };
 
+use libc::c_void;
+
 pub fn str_echo(stream: &mut TcpStream) -> Result<()> {
     let mut buf = [0; 128];
-    match stream.read(&mut buf) {
-        Ok(size) => {
-            println!(
-                "read size: {}, content: {}",
-                size,
-                String::from_utf8_lossy(&buf)
-            );
+    loop {
+        if stream.read(&mut buf)? > 0 {
             stream.write(&buf)?;
-            Ok(())
         }
-        Err(e) => Err(e),
     }
 }
 
 pub fn str_cli(stream: &mut TcpStream) -> Result<()> {
     let mut input = String::new();
-    match stdin().read_line(&mut input) {
-        Ok(n) => {
-            println!("{n} bytes read {input}");
+    let mut out = [0; 128];
+
+    loop {
+        if stdin().read_line(&mut input)? > 0 {
             stream.write(input.as_bytes())?;
-            Ok(())
+            stream.read(&mut out)?;
+            println!("{}", String::from_utf8_lossy(&out));
+            input.clear();
+            unsafe {
+                libc::memset(out.as_mut_ptr() as *mut c_void, 0, size_of::<[u8; 128]>());
+            }
         }
-        Err(error) => Err(error),
     }
 }
