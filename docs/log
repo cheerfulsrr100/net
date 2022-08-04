@@ -9,4 +9,4 @@
 18:18
 - server端加入tempfile, 防止主进程重复启动
 - 新增进程管理, 用来kill到状态异常的进程
-- 解决服务端CLOSE_WAIT进程
+- ~~解决服务端CLOSE_WAIT进程~~2022.8.4. 15:00 服务端socket未关闭导致
