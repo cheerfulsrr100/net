@@ -1,5 +1,14 @@
-server:
+rs_server:
 	cargo run --bin server
 
-client:
+rs_client:
 	cargo run --bin client
+
+cc_cmake:
+	cmake -S . -B ./build
+
+cc_build:
+	cd build; echo $(abspath $(lastword $(MAKEFILE_LIST))); make unix_rs
+
+cc_exec:
+	cd build; echo $(abspath $(lastword $(MAKEFILE_LIST))); ./unix_rs
