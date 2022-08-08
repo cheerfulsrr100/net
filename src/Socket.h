@@ -6,8 +6,8 @@
  * @brief
  *
  **********************************************************/
-#ifndef UNTITLED_SOCKET_H
-#define UNTITLED_SOCKET_H
+#ifndef UNIX_RS_SOCKET_H
+#define UNIX_RS_SOCKET_H
 
 #include <netinet/in.h>
 #include "InetAddr.h"
@@ -29,4 +29,4 @@ private:
     const int sockfd_;
 };
 
-#endif  // UNTITLED_SOCKET_H
+#endif  // UNIX_RS_SOCKET_H

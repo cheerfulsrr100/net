@@ -6,8 +6,8 @@
  * @brief  
  *
  **********************************************************/
-#ifndef UNTITLED_INETADDR_H
-#define UNTITLED_INETADDR_H
+#ifndef UNIX_RS_INETADDR_H
+#define UNIX_RS_INETADDR_H
 
 #include <string>
 #include <netinet/in.h>
@@ -30,4 +30,4 @@ private:
 };
 
 
-#endif //UNTITLED_INETADDR_H
+#endif //UNIX_RS_INETADDR_H
