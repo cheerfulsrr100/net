@@ -63,6 +63,7 @@ ssize_t lib::write(int fd, const void* buf, size_t count)
                 return -1;
             }
         };
+        // 减去已经写成功的数据量
         n_left -= n_writen;
         bufptr += n_writen;
     }
