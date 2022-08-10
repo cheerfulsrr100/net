@@ -63,3 +63,4 @@ ReflowComments: true
 AlignConsecutiveMacros: true
 SortUsingDeclarations: true
 BreakBeforeTernaryOperators: true
+AllowShortFunctionsOnASingleLine: Empty
