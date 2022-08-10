@@ -12,8 +12,9 @@
 #include <netinet/in.h>
 #include "InetAddr.h"
 
-class Socket {
-public:
+class Socket
+{
+  public:
     explicit Socket(int fd) : sockfd_(fd) {}
 
     void bind(const InetAddr &addr);
@@ -25,7 +26,7 @@ public:
 
     int fd() const { return sockfd_; }
 
-private:
+  private:
     const int sockfd_;
 };
 

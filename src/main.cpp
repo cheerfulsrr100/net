@@ -1,9 +1,10 @@
-#include <iostream>
-#include <cstring>
 #include <sys/unistd.h>
+#include <cstring>
+#include <iostream>
 #include "Socket.h"
 
-int main() {
+int main()
+{
 
     auto sock = Socket::socket();
     InetAddr addr("127.0.0.1", 28889);
