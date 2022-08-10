@@ -10,3 +10,33 @@
 - server端加入tempfile, 防止主进程重复启动
 - 新增进程管理, 用来kill到状态异常的进程
 - ~~解决服务端CLOSE_WAIT进程~~2022.8.4. 15:00 服务端socket未关闭导致
+
+2022年8月10日
+23:42
+- `Connection reset by peer`
+  - 猜想: lib::write方法逻辑错误, 导致服务端一直向客户端发送数据, ctrl+c中断客户端时服务端报错
+    ```c
+    for (n = 0; n != -1; n = read(sockfd, buf, MAXLINE)) {
+        if (write(sockfd, buf, n) == -1) {
+            print_errno();
+        }
+    }
+    ```
+  - 参考: https://blog.csdn.net/crazymakercircle/article/details/109777163
+- `Broken pipe`
+  - 猜想: write方法逻辑错误, 当::write时, 应将nleft减去n_writen(已经写入的数据量), 但是相减逻辑放在了::write<0的方法块里
+    ```c
+    for (n_left = count; n_left > 0;) {
+        if ((n_writen = ::write(fd, bufptr, count)) <= 0) {
+            // check EINTR signal
+            if (n_writen == -1 && errno == EINTR) {
+                n_writen = 0;
+            }
+            else {
+                return -1;
+            }
+            n_left -= n_writen;
+            bufptr += n_writen;
+        };
+    }
+    ```

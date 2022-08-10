@@ -3,4 +3,4 @@ project(unix_rs)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(unix_rs src/main.cpp src/InetAddr.cc src/InetAddr.h src/Socket.cc src/Socket.h)
+add_executable(unix_rs src/main.cc src/InetAddr.cc src/InetAddr.h src/Socket.cc src/Socket.h src/lib.h src/lib.cc)

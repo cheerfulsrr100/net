@@ -29,7 +29,7 @@ void Socket::listen()
 
 int Socket::accept(InetAddr &addr)
 {
-    socklen_t addrlen;
+    socklen_t addrlen = sizeof(addr.sockaddr());
     int accept_fd;
     if ((accept_fd = ::accept(sockfd_, (struct sockaddr *)addr.sockaddr(), &addrlen)) == -1) {
         std::cout << "::accept error " << strerror(errno) << std::endl;
