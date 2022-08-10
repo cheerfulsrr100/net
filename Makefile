@@ -12,3 +12,9 @@ cc_build:
 
 cc_exec:
 	cd build; echo $(abspath $(lastword $(MAKEFILE_LIST))); ./unix_rs
+
+cc_dy_format:
+	clang-format -n -Werror src/*
+
+cc_format:
+	clang-format -i src/*
