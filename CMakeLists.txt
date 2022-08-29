@@ -2,5 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 project(unix_rs)
 
 set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_executable(unix_rs src/main.cc src/InetAddr.cc src/InetAddr.h src/Socket.cc src/Socket.h src/lib.h src/lib.cc)
+add_subdirectory(lib)
+add_subdirectory(server)
+add_subdirectory(client)
