@@ -18,3 +18,6 @@ cc_dy_format:
 
 cc_format:
 	clang-format -i src/*
+
+p_tree:
+	tree -L 1 -I "build|CMakeFiles|*.cmake|target|*.lock" > treetmp
